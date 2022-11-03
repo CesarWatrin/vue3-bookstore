@@ -1,21 +1,44 @@
 <script setup>
   import Book from '../components/Book.vue';
   import { bookstore } from "../assets/js/bookstore";
-  import { computed, reactive } from "vue";
+  import {computed, ref, reactive, watch} from "vue";
   import { useRoute, useRouter } from 'vue-router';
 
   const books = reactive(bookstore);
-
-  const paginateBooks = computed(() => {
-    return books.slice(0,8);
-  });
-
   const route = useRoute();
   const router = useRouter();
+  const MAX_BOOKS = 4;
+  const indexStart = ref(0);
+  const indexEnd = ref(MAX_BOOKS)
+
+  watch(
+    () => route,
+    (newValue, oldValue) => { refreshBookList(); },
+    { deep: true }
+  );
+
+  const refreshBookList = () => {
+    const {page} = route.query;
+
+    indexStart.value = (page - 1) * MAX_BOOKS;
+    indexEnd.value = MAX_BOOKS * page;
+  };
+
+  const paginateBooks = computed(() => {
+    return books.slice(indexStart.value, indexEnd.value);
+  });
 
   const handlePagination = (page) => {
-    
-  }
+    router.push({
+      query: {
+        page
+      },
+    });
+  };
+
+  const countPages = computed(() => {
+    return Math.ceil(books.length/MAX_BOOKS);
+  });
 </script>
 <template>
     <div class="tm-main-content">
@@ -35,7 +58,13 @@
         </div>
         <nav class="tm-gallery-nav">
           <ul class="nav justify-content-center">
-            <li v-for="i in 4" class="nav-item pointer" @click="handlePagination(i)"><span class="nav-link">{{ i }}</span></li>
+            <li v-for="i in countPages" class="nav-item" @click="handlePagination(i)">
+              <span
+                  :class="{ active: (route.query.page === i.toString()) || (i === 1 && !route.query.page) }"
+                  class="nav-link">
+                {{ i }}
+              </span>
+            </li>
           </ul>
         </nav>
       </section>
