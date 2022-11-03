@@ -9,7 +9,7 @@ export const bookstore = [
         id:'17C',
         title:'Annihilation',
         author:'Jeff VanderMee',
-        cover:'annihilition.jpg'
+        cover:'annihilation.jpg'
     }, 
     {
         id:'13E',
