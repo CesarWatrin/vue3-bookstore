@@ -1,7 +1,7 @@
 <script setup>
   import Book from '../components/Book.vue';
   import { bookstore } from "../assets/js/bookstore";
-  import {computed, ref, reactive, watch} from "vue";
+  import {computed, ref, reactive, watch, onMounted} from "vue";
   import { useRoute, useRouter } from 'vue-router';
 
   const books = reactive(bookstore);
@@ -11,14 +11,12 @@
   const indexStart = ref(0);
   const indexEnd = ref(MAX_BOOKS)
 
-  watch(
-    () => route,
-    (newValue, oldValue) => { refreshBookList(); },
-    { deep: true }
-  );
-
   const refreshBookList = () => {
-    const {page} = route.query;
+    let {page} = route.query;
+
+    if (typeof page === 'undefined') {
+      page = 1;
+    }
 
     indexStart.value = (page - 1) * MAX_BOOKS;
     indexEnd.value = MAX_BOOKS * page;
@@ -39,6 +37,12 @@
   const countPages = computed(() => {
     return Math.ceil(books.length/MAX_BOOKS);
   });
+
+  watch(
+      () => route,
+      (newValue, oldValue) => { refreshBookList(); },
+      { deep: true, immediate: true }
+  );
 </script>
 <template>
     <div class="tm-main-content">
