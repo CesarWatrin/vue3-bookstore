@@ -1,13 +1,21 @@
 <script setup>
   import Book from '../components/Book.vue';
   import { bookstore } from "../assets/js/bookstore";
-  import {computed, reactive} from "vue";
+  import { computed, reactive } from "vue";
+  import { useRoute, useRouter } from 'vue-router';
 
   const books = reactive(bookstore);
 
   const paginateBooks = computed(() => {
     return books.slice(0,8);
   });
+
+  const route = useRoute();
+  const router = useRouter();
+
+  const handlePagination = (page) => {
+    
+  }
 </script>
 <template>
     <div class="tm-main-content">
@@ -27,10 +35,7 @@
         </div>
         <nav class="tm-gallery-nav">
           <ul class="nav justify-content-center">
-            <li class="nav-item"><a class="nav-link active" href="#">1</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">2</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">3</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">4</a></li>
+            <li v-for="i in 4" class="nav-item pointer" @click="handlePagination(i)"><span class="nav-link">{{ i }}</span></li>
           </ul>
         </nav>
       </section>
