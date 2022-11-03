@@ -1,6 +1,13 @@
 <script setup>
   import Book from '../components/Book.vue';
   import { bookstore } from "../assets/js/bookstore";
+  import {computed, reactive} from "vue";
+
+  const books = reactive(bookstore);
+
+  const paginateBooks = computed(() => {
+    return books.slice(0,8);
+  });
 </script>
 <template>
     <div class="tm-main-content">
@@ -15,7 +22,7 @@
         </p>
         <div class="tm-gallery">
           <div class="row">
-              <Book v-for="book in bookstore" :key="book.id" :book="book" />
+              <Book v-for="book in paginateBooks" :key="book.id" :book="book" />
           </div>
         </div>
         <nav class="tm-gallery-nav">
